@@ -34,8 +34,7 @@ ckd-ai/
 │   ├── input_guardrail.py        # OOD Validation and biological anomaly detection
 │   └── ocular_model.py           # Neural network PyTorch class definitions
 │
-├── web_app/                      
-│   └── main.py                   # FastAPI Backend serving predictions and model inference
+├── main.py                       # FastAPI Backend serving predictions and model inference
 │
 ├── requirements.txt              # Python Backend dependencies
 └── README.md                     # You are here!
@@ -75,7 +74,7 @@ The backend loads the heavy `.pth` neural networks into memory and exposes the `
    ```
 4. **Start the Prediction Engine**:
    ```bash
-   python web_app/main.py
+   python main.py
    ```
    *The backend should now say it is actively listening natively on Port 8000.*
 

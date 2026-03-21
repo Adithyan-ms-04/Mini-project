@@ -16,7 +16,7 @@ import sys
 import io
 
 # Add project root to path for model imports
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'scripts')))
 from ocular_model import BilateralCKDModel, GrahamTransform
 from ensemble_manager import CKDWeightedEnsemble
 from input_guardrail import InputGuardrail
