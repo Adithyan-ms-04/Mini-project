@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.bat
 
 # PyTorch & Machine Learning Models (Large Files)
 # NOTE: Removed *.pth and *.joblib ignores so that your friend can 
