@@ -3,7 +3,7 @@
 **CKD AI** is an advanced, dual-branch diagnostic architecture designed to predict Chronic Kidney Disease risk by performing a late-fusion ensemble approach. The platform evaluates 10 core biological metrics using a Calibrated Random Forest (Clinical Branch) alongside Retinal Fundus Imaging processed via an EfficientNet-B3 architecture utilizing Graham Transforms (Ocular Branch).
 
 ### Development Team
-*   **Adithyan M S** - Lead AI Architect (Ocular & Clinical Late-Fusion Ensembling)
+*   **Adithyan M S** - AI Architect (Ocular & Clinical Late-Fusion Ensembling)
 *   **Alan Seby** - Frontend Developer & UI/UX Designer
 *   **Haripriya B** - Backend Optimization & Data Pipeline Engineer
 *   **Lakshmipriya S** - Clinical Data & Guardrails Engineer
