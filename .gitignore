@@ -1,0 +1,64 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch & Machine Learning Models (Large Files)
+# NOTE: Removed *.pth and *.joblib ignores so that your friend can 
+# download the pre-trained models required to run the web app!
+# We also explicitly track the models directory.
+!models/
+!models/*.pth
+!models/*.joblib
+!models/*.json
+
+# Dataset & Clinical Information (Large & Sensitive)
+data/
+dataset/
+*.csv
+*.xlsx
+*.db
+*.sqlite3
+
+# ALL Images (Ignoring raw patient fundus scans, but NOT frontend assets if any)
+dataset/**/*.png
+dataset/**/*.jpg
+dataset/**/*.jpeg
+data/**/*.png
+data/**/*.jpg
+data/**/*.jpeg
+*.gif
+*.svg
+*.bmp
+*.tiff
+*.webp
+
+# Frontend Setup / Dependencies
+frontend/node_modules/
+node_modules/
+dist/
+build/
+.next/
+*.log
+
+# Environments
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.venv/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Any other compressed archives
+*.zip
+*.tar.gz
+*.rar
+*.7z

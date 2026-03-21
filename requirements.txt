@@ -1,0 +1,13 @@
+torch
+torchvision
+pandas
+scikit-learn
+efficientnet_pytorch
+opencv-python
+joblib
+fastapi
+uvicorn
+python-multipart
+jinja2
+matplotlib
+seaborn

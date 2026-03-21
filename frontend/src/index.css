@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .glass-card {
+    @apply bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-xl shadow-black/20;
+  }
+}
+
+body {
+  background: radial-gradient(circle at 15% 50%, rgba(20, 30, 48, 1), rgba(36, 59, 85, 1) 100%);
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
