@@ -43,7 +43,8 @@ def train_and_save_model(csv_path, model_save_path):
     # 'Feature Dilution' and ensure the model responds sharply to key indicators.
     CORE_FEATURES = [
         'GFR', 'SerumCreatinine', 'HbA1c', 'SystolicBP', 'Age', 
-        'BMI', 'HemoglobinLevels', 'ProteinInUrine', 'ACR', 'BUNLevels'
+        'BMI', 'HemoglobinLevels', 'ProteinInUrine', 'ACR', 'BUNLevels',
+        'Smoking', 'AlcoholConsumption', 'PhysicalActivity', 'DietQuality', 'SleepQuality'
     ]
     
     print(f"Training on pruned Core Feature set: {CORE_FEATURES}")

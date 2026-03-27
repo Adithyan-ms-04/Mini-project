@@ -94,15 +94,24 @@ class CKDWeightedEnsemble:
         # --- Three-Tier Classification Logic ---
         if weighted_prob < 0.45:
             tier = "Low Risk"
-            recommendation = "Routine monitoring recommended."
+            recommendation = (
+                "Routine monitoring recommended. Maintain a balanced diet, stay hydrated, "
+                "and ensure regular exercise to support kidney health. Continue annual check-ups."
+            )
             pred_class = 0
         elif 0.45 <= weighted_prob <= 0.60:
             tier = "Consultation Required (Gray Zone)"
-            recommendation = "Inconclusive results - Manual review and additional testing suggested."
+            recommendation = (
+                "Inconclusive results. Schedule a follow-up with a nephrologist or primary care physician "
+                "for a comprehensive metabolic panel (CMP) and urinalysis. Limit sodium intake and monitor blood pressure."
+            )
             pred_class = 1 # Flagged for review
         else:
             tier = "High Risk"
-            recommendation = "Immediate clinical follow-up required."
+            recommendation = (
+                "Immediate clinical follow-up required. Prioritize diagnostic testing including eGFR, BUN, "
+                "and serum creatinine. Strictly manage blood pressure and blood sugar. Avoid NSAIDs until cleared by a doctor."
+            )
             pred_class = 1
         
         return {

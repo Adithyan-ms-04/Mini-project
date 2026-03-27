@@ -10,7 +10,8 @@ export default function App() {
   const [clinicalData, setClinicalData] = useState({
     Age: 45, Gender: 0, BMI: 24.5, SystolicBP: 120,
     GFR: 90, SerumCreatinine: 1.0, HbA1c: 5.4, HemoglobinLevels: 14.0,
-    BUNLevels: 15.0, ProteinInUrine: 0.1, ACR: 10.0
+    BUNLevels: 15.0, ProteinInUrine: 0.1, ACR: 10.0,
+    Smoking: 0, AlcoholConsumption: 0, PhysicalActivity: 0, DietQuality: 0, SleepQuality: 0
   });
 
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ export default function App() {
 
   const handleRunFusion = async () => {
     if (!leftImage) {
-      alert("Please upload at least the left eye fundus image.");
+      alert("Please upload at least one retinal fundus image.");
       return;
     }
 
@@ -157,6 +158,58 @@ export default function App() {
                   </label>
                 </div>
               </div>
+
+              <div className="space-y-4 border-t border-gray-700/50 pt-5">
+                <h3 className="text-sm uppercase tracking-wider text-gray-400 font-semibold mb-2">Lifestyle Data</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <label className="flex flex-col text-sm">
+                    <span className="text-gray-300 mb-1">Smoking</span>
+                    <select name="Smoking" value={clinicalData.Smoking} onChange={handleInputChange} className="bg-gray-900/50 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                      <option value={0}>Non-smoker</option>
+                      <option value={1}>Smoker</option>
+                    </select>
+                  </label>
+                  <label className="flex flex-col text-sm">
+                    <span className="text-gray-300 mb-1">Alcohol Consumption</span>
+                    <select name="AlcoholConsumption" value={clinicalData.AlcoholConsumption} onChange={handleInputChange} className="bg-gray-900/50 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                      <option value={0}>None (0)</option>
+                      <option value={5}>Low (5 Units)</option>
+                      <option value={10}>Moderate (10 Units)</option>
+                      <option value={15}>High (15 Units)</option>
+                      <option value={20}>Very High (20 Units)</option>
+                    </select>
+                  </label>
+                  <label className="flex flex-col text-sm">
+                    <span className="text-gray-300 mb-1">Physical Activity</span>
+                    <select name="PhysicalActivity" value={clinicalData.PhysicalActivity} onChange={handleInputChange} className="bg-gray-900/50 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                      <option value={0}>Sedentary (0/10)</option>
+                      <option value={3}>Light Activity (3/10)</option>
+                      <option value={5}>Moderate Activity (5/10)</option>
+                      <option value={8}>Active (8/10)</option>
+                      <option value={10}>Very Active (10/10)</option>
+                    </select>
+                  </label>
+                  <label className="flex flex-col text-sm">
+                    <span className="text-gray-300 mb-1">Diet Quality</span>
+                    <select name="DietQuality" value={clinicalData.DietQuality} onChange={handleInputChange} className="bg-gray-900/50 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                      <option value={0}>Poor (0/10)</option>
+                      <option value={4}>Fair (4/10)</option>
+                      <option value={6}>Average (6/10)</option>
+                      <option value={8}>Good (8/10)</option>
+                      <option value={10}>Excellent (10/10)</option>
+                    </select>
+                  </label>
+                  <label className="flex flex-col text-sm col-span-2">
+                    <span className="text-gray-300 mb-1">Sleep Quality</span>
+                    <select name="SleepQuality" value={clinicalData.SleepQuality} onChange={handleInputChange} className="bg-gray-900/50 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                      <option value={4}>Poor (&lt; 4 Hours/Night)</option>
+                      <option value={6}>Fair (~6 Hours/Night)</option>
+                      <option value={8}>Good (~8 Hours/Night)</option>
+                      <option value={10}>Optimal (10+ Hours/Night)</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
             </form>
           </section>
 
@@ -174,11 +227,11 @@ export default function App() {
               >
                 <input type="file" ref={fileInputLeft} className="hidden" accept="image/*" onChange={(e) => setLeftImage(e.target.files?.[0] || null)} />
                 {leftImage ? (
-                  <img src={URL.createObjectURL(leftImage)} alt="Left Eye" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+                  <img src={URL.createObjectURL(leftImage)} alt="Retinal Fundus Image 1" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
                 ) : (
                   <>
                     <UploadCloud className="w-10 h-10 text-gray-400 mb-3 group-hover:text-blue-400 transition" />
-                    <p className="text-gray-200 font-medium">Upload Left Eye Fundus</p>
+                    <p className="text-gray-200 font-medium">Upload Retinal Fundus Image 1</p>
                     <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 10MB</p>
                   </>
                 )}
@@ -190,11 +243,11 @@ export default function App() {
               >
                 <input type="file" ref={fileInputRight} className="hidden" accept="image/*" onChange={(e) => setRightImage(e.target.files?.[0] || null)} />
                 {rightImage ? (
-                  <img src={URL.createObjectURL(rightImage)} alt="Right Eye" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+                  <img src={URL.createObjectURL(rightImage)} alt="Retinal Fundus Image 2" className="absolute inset-0 w-full h-full object-cover rounded-xl" />
                 ) : (
                   <>
                     <UploadCloud className="w-10 h-10 text-gray-400 mb-3 group-hover:text-blue-400 transition" />
-                    <p className="text-gray-200 font-medium">Upload Right Eye (Optional)</p>
+                    <p className="text-gray-200 font-medium">Upload Retinal Fundus Image 2 (Optional)</p>
                     <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 10MB</p>
                   </>
                 )}
@@ -261,7 +314,7 @@ export default function App() {
                           <div className="w-1.5 h-4 bg-emerald-500 rounded-full" />
                           Ocular Branch Analysis
                        </span>
-                       <span className="text-gray-200 font-medium font-mono">{results.ocular_risk.toFixed(3)}</span>
+                       <span className="text-gray-200 font-medium font-mono">{(results.ocular_risk * 100).toFixed(1)}%</span>
                      </div>
                      <div className="h-1.5 w-full bg-gray-900 rounded-full overflow-hidden">
                        <div className="h-full bg-emerald-500 transition-all duration-1000" style={{ width: `${results.ocular_risk * 100}%`}} />
@@ -274,7 +327,7 @@ export default function App() {
                           <div className="w-1.5 h-4 bg-blue-500 rounded-full" />
                           Clinical Pipeline
                        </span>
-                       <span className="text-gray-200 font-medium font-mono">{results.clinical_risk.toFixed(3)}</span>
+                       <span className="text-gray-200 font-medium font-mono">{(results.clinical_risk * 100).toFixed(1)}%</span>
                      </div>
                      <div className="h-1.5 w-full bg-gray-900 rounded-full overflow-hidden">
                        <div className="h-full bg-blue-500 transition-all duration-1000" style={{ width: `${results.clinical_risk * 100}%`}} />

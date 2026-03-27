@@ -57,8 +57,11 @@ def get_fusion_prediction(ocular_models, clinical_model, image_path, clinical_da
     # Assuming clinical_data_row is a DataFrame or dict with correct features
     clinical_prob = clinical_model.predict_proba(clinical_data_row)[:, 1][0] if clinical_model else 0.5
     
-    # Late Fusion (0.7 Clinical / 0.3 Ocular)
-    final_score = (0.7 * clinical_prob) + (0.3 * avg_ocular_prob)
+    # Late Fusion Evaluation
+    # Default is 0.7 Clinical + 0.3 Ocular. Tuning these weights balances feature relevance.
+    CLINICAL_WEIGHT = 0.7
+    OCULAR_WEIGHT = 0.3
+    final_score = (CLINICAL_WEIGHT * clinical_prob) + (OCULAR_WEIGHT * avg_ocular_prob)
     
     return final_score, avg_ocular_prob, clinical_prob
 

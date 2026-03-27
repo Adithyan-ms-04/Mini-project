@@ -171,8 +171,6 @@ async def predict(
         ensemble_result = ensemble_manager.predict(ocular_probs)
         
         avg_ocular_prob = ensemble_result['weighted_probability']
-        risk_tier = ensemble_result['risk_tier']
-        recommendation = ensemble_result['clinical_recommendation']
         
         # Generate Saliency using first model
         tensor_left.requires_grad = True
@@ -201,15 +199,47 @@ async def predict(
     else:
         clinical_prob = 0.5
 
-    # 5. Fusion (0.7 Clinical + 0.3 Ocular)
-    final_score = (0.7 * clinical_prob) + (0.3 * avg_ocular_prob)
+    # 5. Fusion Evaluation
+    # Default is 0.7 Clinical + 0.3 Ocular. You can tune these weights based on model validation!
+    CLINICAL_WEIGHT = 0.7
+    OCULAR_WEIGHT = 0.3
+    final_score = (CLINICAL_WEIGHT * clinical_prob) + (OCULAR_WEIGHT * avg_ocular_prob)
+
+    # 6. Determine Final Risk Tier and Clinical Recommendation
+    if final_score < 0.45:
+        risk_tier = "Low Risk"
+        recommendation = "Routine monitoring recommended. Maintain a balanced diet, stay hydrated, and ensure regular exercise to support kidney health. Continue annual check-ups."
+    elif 0.45 <= final_score <= 0.60:
+        risk_tier = "Consultation Required (Gray Zone)"
+        recommendation = "Inconclusive results. Schedule a follow-up with a nephrologist or primary care physician for a comprehensive metabolic panel (CMP) and urinalysis."
+    else:
+        risk_tier = "High Risk"
+        recommendation = "Immediate clinical follow-up required. Prioritize diagnostic testing including eGFR, BUN, and serum creatinine. Strictly manage blood pressure and blood sugar."
+        
+    # Inject Lifestyle Advisor AI Recommendations Based on User Input
+    lifestyle_advice = []
+    clinical_dict = json.loads(clinical_data) if isinstance(clinical_data, str) else clinical_data
+    
+    if float(clinical_dict.get('Smoking', 0)) == 1:
+        lifestyle_advice.append("Quitting smoking is critical to slow CKD progression and reduce cardiovascular risk.")
+    if float(clinical_dict.get('AlcoholConsumption', 0)) >= 10:
+        lifestyle_advice.append("Reduce alcohol consumption to avoid exacerbating hypertension and kidney stress.")
+    if float(clinical_dict.get('PhysicalActivity', 10)) <= 3:
+        lifestyle_advice.append("Incorporate at least 150 minutes of moderate aerobic activity weekly to improve metabolic health.")
+    if float(clinical_dict.get('DietQuality', 10)) <= 4:
+        lifestyle_advice.append("Adopt a kidney-friendly diet low in sodium, processed foods, and refined sugars.")
+    if float(clinical_dict.get('SleepQuality', 8)) <= 4:
+        lifestyle_advice.append("Improve sleep hygiene; aim for 7-8 hours per night to help regulate blood pressure and stress hormones.")
+
+    if lifestyle_advice:
+        recommendation += " Lifestyle Recommendations: " + " ".join(lifestyle_advice)
 
     return {
         "final_risk": float(final_score),
         "ocular_risk": float(avg_ocular_prob),
         "clinical_risk": float(clinical_prob),
-        "risk_tier": risk_tier if OCULAR_MODELS else "N/A",
-        "recommendation": recommendation if OCULAR_MODELS else "Complete screening to see recommendation.",
+        "risk_tier": risk_tier,
+        "recommendation": recommendation,
         "saliency_map": saliency_base64
     }
 
