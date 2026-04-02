@@ -234,13 +234,114 @@ async def predict(
     if lifestyle_advice:
         recommendation += " Lifestyle Recommendations: " + " ".join(lifestyle_advice)
 
+    # --- LIFESTYLE SIMULATOR ENGINE ---
+    # Calculate potential risk reductions if user optimizes their lifestyle.
+    lifestyle_simulations = []
+    if CLINICAL_MODEL is not None:
+        base_df = clinical_df.copy()
+        
+        # Helper to compute risk drop
+        def get_risk_reduction(modified_df):
+            sim_clinical_prob = CLINICAL_MODEL.predict_proba(modified_df)[:, 1][0]
+            sim_score = (CLINICAL_WEIGHT * sim_clinical_prob) + (OCULAR_WEIGHT * avg_ocular_prob)
+            return max(0, final_score - sim_score)
+            
+        optimal_lifestyle_set = False
+        sim_all_df = base_df.copy()
+
+        # 1. Smoking (Optimal: 0)
+        if float(base_df['Smoking'].iloc[0]) == 1:
+            sim_df = base_df.copy()
+            sim_df['Smoking'] = 0.0
+            reduction = get_risk_reduction(sim_df)
+            if reduction > 0.001:
+                lifestyle_simulations.append({
+                    "factor": "Smoking",
+                    "action": "Quit smoking",
+                    "reduction_pct": float(reduction * 100)
+                })
+            sim_all_df['Smoking'] = 0.0
+            optimal_lifestyle_set = True
+
+        # 2. Alcohol (Optimal: 0)
+        curr_alcohol = float(base_df['AlcoholConsumption'].iloc[0])
+        if curr_alcohol > 0:
+            sim_df = base_df.copy()
+            sim_df['AlcoholConsumption'] = 0.0
+            reduction = get_risk_reduction(sim_df)
+            if reduction > 0.001:
+                lifestyle_simulations.append({
+                    "factor": "Alcohol",
+                    "action": "Eliminate alcohol consumption",
+                    "reduction_pct": float(reduction * 100)
+                })
+            sim_all_df['AlcoholConsumption'] = 0.0
+            optimal_lifestyle_set = True
+
+        # 3. Physical Activity (Optimal: 10)
+        curr_activity = float(base_df['PhysicalActivity'].iloc[0])
+        if curr_activity < 10:
+            sim_df = base_df.copy()
+            sim_df['PhysicalActivity'] = 10.0
+            reduction = get_risk_reduction(sim_df)
+            if reduction > 0.001:
+                lifestyle_simulations.append({
+                    "factor": "Exercise",
+                    "action": "Increase physical activity to optimal levels",
+                    "reduction_pct": float(reduction * 100)
+                })
+            sim_all_df['PhysicalActivity'] = 10.0
+            optimal_lifestyle_set = True
+
+        # 4. Diet Quality (Optimal: 10)
+        curr_diet = float(base_df['DietQuality'].iloc[0])
+        if curr_diet < 10:
+            sim_df = base_df.copy()
+            sim_df['DietQuality'] = 10.0
+            reduction = get_risk_reduction(sim_df)
+            if reduction > 0.001:
+                lifestyle_simulations.append({
+                    "factor": "Diet",
+                    "action": "Adopt an excellent, kidney-friendly diet",
+                    "reduction_pct": float(reduction * 100)
+                })
+            sim_all_df['DietQuality'] = 10.0
+            optimal_lifestyle_set = True
+
+        # 5. Sleep Quality (Optimal: 10)
+        curr_sleep = float(base_df['SleepQuality'].iloc[0])
+        if curr_sleep < 10:
+            sim_df = base_df.copy()
+            sim_df['SleepQuality'] = 10.0
+            reduction = get_risk_reduction(sim_df)
+            if reduction > 0.001:
+                lifestyle_simulations.append({
+                    "factor": "Sleep",
+                    "action": "Ensure 8+ hours of high-quality sleep nightly",
+                    "reduction_pct": float(reduction * 100)
+                })
+            sim_all_df['SleepQuality'] = 10.0
+            optimal_lifestyle_set = True
+
+        # Combined Optimal
+        if optimal_lifestyle_set and len(lifestyle_simulations) > 1:
+            total_reduction = get_risk_reduction(sim_all_df)
+            if total_reduction > 0.001:
+                lifestyle_simulations.append({
+                    "factor": "All Changes",
+                    "action": "Combined optimal lifestyle",
+                    "reduction_pct": float(total_reduction * 100),
+                    "is_combined": True
+                })
+
     return {
         "final_risk": float(final_score),
         "ocular_risk": float(avg_ocular_prob),
         "clinical_risk": float(clinical_prob),
         "risk_tier": risk_tier,
         "recommendation": recommendation,
-        "saliency_map": saliency_base64
+        "saliency_map": saliency_base64,
+        "lifestyle_simulations": lifestyle_simulations
     }
 
 if __name__ == "__main__":
