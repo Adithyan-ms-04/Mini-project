@@ -21,8 +21,17 @@ from ocular_model import BilateralCKDModel, GrahamTransform
 from ensemble_manager import CKDWeightedEnsemble
 from input_guardrail import InputGuardrail
 from utils import GradCAMPlusPlus
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://mini-project-0ym0.onrender.com"], # In production, replace "*" with your Vercel URL, e.g., ["https://my-app.vercel.app"]
+    allow_credentials=True,
+    allow_methods=["https://mini-project-0ym0.onrender.com"],
+    allow_headers=["https://mini-project-0ym0.onrender.com"],
+)
 
 # Backend is now purely API, serving the React frontend.
 
@@ -346,4 +355,5 @@ async def predict(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

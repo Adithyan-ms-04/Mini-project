@@ -37,7 +37,7 @@ export default function App() {
       if (rightImage) formData.append('right_image', rightImage);
       formData.append('clinical_data', JSON.stringify(clinicalData));
 
-      const res = await fetch('/predict', {
+      const res = await fetch('https://mini-project-0ym0.onrender.com', {
         method: 'POST',
         body: formData,
       });

@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/predict': 'http://127.0.0.1:8000'
+      '/predict': 'https://mini-project-0ym0.onrender.com'
     }
   }
 })
