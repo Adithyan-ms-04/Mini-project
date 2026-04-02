@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, CheckCircle2, AlertCircle, RefreshCw, TrendingDown, Activity } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Docs from './Docs';
 
 export default function App() {
@@ -64,7 +65,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen text-gray-100 font-inter">
+    <>
+      <SpeedInsights />
+      <div className="min-h-screen text-gray-100 font-inter">
       {/* Header */}
       <nav className="glass-card flex items-center justify-between px-8 py-4 mb-8 sticky top-0 z-50 rounded-none border-t-0 border-x-0">
         <div className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-400 to-emerald-400 text-transparent bg-clip-text font-outfit cursor-pointer" onClick={() => setActiveTab('predictor')}>
@@ -420,6 +423,7 @@ export default function App() {
           )}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
