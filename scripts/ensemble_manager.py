@@ -12,8 +12,7 @@ stabilizes outliers (specifically Fold 3) to maintain high diagnostic specificit
 import os
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+# Plotting disabled to save memory on server
 from typing import List, Dict, Union
 
 class CKDWeightedEnsemble:
@@ -137,34 +136,7 @@ class CKDWeightedEnsemble:
 
 def visualize_ensemble_config(ensemble: CKDWeightedEnsemble):
     """Generates visualization artifacts for documentation and dashboard reporting."""
-    df = ensemble.get_weight_report()
-    
-    sns.set_theme(style="whitegrid")
-    plt.figure(figsize=(12, 5))
-    
-    # Plot 1: Weight Distribution
-    plt.subplot(1, 2, 1)
-    # Highlight penalized outliers in Red
-    colors = ['#3498db' if s >= 0.75 else '#e74c3c' for s in df['Specificity']]
-    sns.barplot(data=df, x='Fold', y='Weight', palette=colors)
-    plt.title("Optimized Weight Distribution\n(Red = Specificity Outlier Penalized)")
-    plt.ylim(0, max(df['Weight']) * 1.2)
-    
-    # Plot 2: Perf Metrics vs Weights
-    plt.subplot(1, 2, 2)
-    plt.plot(df['Fold'], df['Sensitivity'], marker='o', label='Sensitivity', color='#2ecc71', linewidth=2)
-    plt.plot(df['Fold'], df['Specificity'], marker='s', label='Specificity', color='#e67e22', linewidth=2)
-    plt.bar(df['Fold'], df['Weight'], alpha=0.3, label='Assigned Weight', color='#9b59b6')
-    plt.title("Metric Components vs. Aggregate Weight")
-    plt.ylabel("Score")
-    plt.legend()
-    
-    plt.tight_layout()
-    os.makedirs("models", exist_ok=True)
-    save_path = "models/ensemble_weight_dist.png"
-    plt.savefig(save_path)
-    plt.close()
-    print(f"\n[Artifact Generated] Visual representation saved to: {save_path}")
+    print("\n[Artifact Generation Disabled] Visual representations require matplotlib/seaborn.")
 
 # --- Main Application Logic ---
 if __name__ == "__main__":
