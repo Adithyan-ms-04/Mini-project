@@ -3,7 +3,7 @@ torchvision
 pandas
 scikit-learn
 efficientnet_pytorch
-opencv-python
+opencv-python-headless
 joblib
 fastapi
 uvicorn
