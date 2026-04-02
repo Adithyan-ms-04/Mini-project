@@ -27,10 +27,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://mini-project-0ym0.onrender.com"], # In production, replace "*" with your Vercel URL, e.g., ["https://my-app.vercel.app"]
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["https://mini-project-0ym0.onrender.com"],
-    allow_headers=["https://mini-project-0ym0.onrender.com"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Backend is now purely API, serving the React frontend.
