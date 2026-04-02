@@ -56,7 +56,7 @@ def load_all_models():
     #   Fold 5: Specificity 34.78% → best balance of sensitivity & specificity ✅
     #
     # Including the collapsed folds would bias every prediction toward CKD.
-    SELECTED_FOLDS = [1, 2, 3, 4, 5]
+    SELECTED_FOLDS = [5]
     for i in SELECTED_FOLDS:
         path = f"models/fold_{i}.pth"
         if os.path.exists(path):
