@@ -168,18 +168,21 @@ async def predict(
                 ocular_probs.append(prob)
         
         # --- ENSEMBLE OPTIMIZATION ---
-        # Instead of simple mean, use the production-ready Weighted Ensemble
-        fold_metrics = {
-            1: {"sensitivity": 0.8552, "specificity": 0.7875},
-            2: {"sensitivity": 0.9210, "specificity": 0.8250},
-            3: {"sensitivity": 0.9472, "specificity": 0.7037},
-            4: {"sensitivity": 0.8980, "specificity": 0.8375},
-            5: {"sensitivity": 0.8816, "specificity": 0.8375}
-        }
-        ensemble_manager = CKDWeightedEnsemble(fold_metrics)
-        ensemble_result = ensemble_manager.predict(ocular_probs)
-        
-        avg_ocular_prob = ensemble_result['weighted_probability']
+        # TEMPORARY FIX: Bypass ensemble since we only loaded 1 model
+        # The ensemble expects 5 inputs but we only have 1 on Render free tier.
+        if len(ocular_probs) == 1:
+            avg_ocular_prob = ocular_probs[0]
+        else:
+            fold_metrics = {
+                1: {"sensitivity": 0.8552, "specificity": 0.7875},
+                2: {"sensitivity": 0.9210, "specificity": 0.8250},
+                3: {"sensitivity": 0.9472, "specificity": 0.7037},
+                4: {"sensitivity": 0.8980, "specificity": 0.8375},
+                5: {"sensitivity": 0.8816, "specificity": 0.8375}
+            }
+            ensemble_manager = CKDWeightedEnsemble(fold_metrics)
+            ensemble_result = ensemble_manager.predict(ocular_probs)
+            avg_ocular_prob = ensemble_result['weighted_probability']
         
         # Generate Saliency using first model
         tensor_left.requires_grad = True
