@@ -12,6 +12,7 @@ from PIL import Image
 from torchvision import transforms
 from fastapi import FastAPI, UploadFile, File, Form, Request
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 import sys
 import io
 
@@ -33,8 +34,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Backend is now purely API, serving the React frontend.
-
 # Device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -46,17 +45,8 @@ FEATURE_NAMES = []
 def load_all_models():
     global OCULAR_MODELS, CLINICAL_MODEL, FEATURE_NAMES
     
-    # 1. Load Ocular Ensemble — Folds 2 & 5 only.
-    #
-    # Verification results (verify_fold5.py) showed:
-    #   Fold 1: Specificity 0.00%  → trivial classifier (always predicts CKD) ❌
-    #   Fold 2: Specificity 26.09% → genuine discrimination ✅
-    #   Fold 3: Specificity 8.70%  → near-trivial, excluded ❌
-    #   Fold 4: Specificity 0.00%  → trivial classifier (always predicts CKD) ❌
-    #   Fold 5: Specificity 34.78% → best balance of sensitivity & specificity ✅
-    #
-    # Including the collapsed folds would bias every prediction toward CKD.
-    SELECTED_FOLDS = [5]
+    # 1. Load Ocular Ensemble — All 5 folds (HuggingFace Spaces provides enough RAM)
+    SELECTED_FOLDS = [1, 2, 3, 4, 5]
     for i in SELECTED_FOLDS:
         path = f"models/fold_{i}.pth"
         if os.path.exists(path):
@@ -88,10 +78,13 @@ def load_all_models():
 @app.on_event("startup")
 async def startup_event():
     load_all_models()
-
-@app.get("/")
-async def root():
-    return {"status": "CKD AI Backend Engine is Running", "features_tracked": len(FEATURE_NAMES)}
+    # Mount frontend AFTER all routes are registered so /predict isn't intercepted
+    frontend_dist = os.path.join(os.path.dirname(__file__), "frontend", "dist")
+    if os.path.isdir(frontend_dist):
+        app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")
+        print(f"Serving frontend from {frontend_dist}")
+    else:
+        print(f"Warning: frontend/dist not found at {frontend_dist} — API-only mode")
 
 @app.post("/predict")
 async def predict(
@@ -167,22 +160,17 @@ async def predict(
                 prob = torch.sigmoid(logits).item()
                 ocular_probs.append(prob)
         
-        # --- ENSEMBLE OPTIMIZATION ---
-        # TEMPORARY FIX: Bypass ensemble since we only loaded 1 model
-        # The ensemble expects 5 inputs but we only have 1 on Render free tier.
-        if len(ocular_probs) == 1:
-            avg_ocular_prob = ocular_probs[0]
-        else:
-            fold_metrics = {
-                1: {"sensitivity": 0.8552, "specificity": 0.7875},
-                2: {"sensitivity": 0.9210, "specificity": 0.8250},
-                3: {"sensitivity": 0.9472, "specificity": 0.7037},
-                4: {"sensitivity": 0.8980, "specificity": 0.8375},
-                5: {"sensitivity": 0.8816, "specificity": 0.8375}
-            }
-            ensemble_manager = CKDWeightedEnsemble(fold_metrics)
-            ensemble_result = ensemble_manager.predict(ocular_probs)
-            avg_ocular_prob = ensemble_result['weighted_probability']
+        # --- WEIGHTED ENSEMBLE (All 5 Folds) ---
+        fold_metrics = {
+            1: {"sensitivity": 0.8552, "specificity": 0.7875},
+            2: {"sensitivity": 0.9210, "specificity": 0.8250},
+            3: {"sensitivity": 0.9472, "specificity": 0.7037},
+            4: {"sensitivity": 0.8980, "specificity": 0.8375},
+            5: {"sensitivity": 0.8816, "specificity": 0.8375}
+        }
+        ensemble_manager = CKDWeightedEnsemble(fold_metrics)
+        ensemble_result = ensemble_manager.predict(ocular_probs)
+        avg_ocular_prob = ensemble_result['weighted_probability']
         
         # Generate Saliency using first model
         tensor_left.requires_grad = True

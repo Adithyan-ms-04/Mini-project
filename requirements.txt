@@ -3,6 +3,7 @@ torch==2.11.0
 torchvision==0.26.0
 efficientnet_pytorch==0.7.1
 pandas
+numpy
 scikit-learn
 opencv-python-headless
 joblib
@@ -10,3 +11,5 @@ fastapi
 uvicorn
 python-multipart
 jinja2
+aiofiles
+pillow
