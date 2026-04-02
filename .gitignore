@@ -58,6 +58,12 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
+<<<<<<< HEAD
+=======
+# Installers
+* .exe
+
+>>>>>>> cf293a8 (Initial deployment: CKD prediction system with Docker)
 # Any other compressed archives
 *.zip
 *.tar.gz
