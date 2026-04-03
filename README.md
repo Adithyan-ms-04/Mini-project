@@ -1,4 +1,15 @@
+---
+title: CKD AI Diagnostic Platform
+emoji: 🏥
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # CKD AI: Multimodal Chronic Kidney Disease Diagnostic Platform
+
 
 **CKD AI** is an advanced, dual-branch diagnostic architecture designed to predict Chronic Kidney Disease risk by performing a late-fusion ensemble approach. The platform evaluates 10 core biological metrics using a Calibrated Random Forest (Clinical Branch) alongside Retinal Fundus Imaging processed via an EfficientNet-B3 architecture utilizing Graham Transforms (Ocular Branch).
 
