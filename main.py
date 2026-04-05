@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (for local development)
+load_dotenv()
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
