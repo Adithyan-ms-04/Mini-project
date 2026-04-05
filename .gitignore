@@ -61,7 +61,7 @@ Thumbs.db
 <<<<<<< HEAD
 =======
 # Installers
-* .exe
+*.exe
 
 >>>>>>> cf293a8 (Initial deployment: CKD prediction system with Docker)
 # Any other compressed archives
